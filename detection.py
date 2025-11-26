@@ -27,7 +27,7 @@ import cv2
 app = Flask(__name__)
 
 # Load YOLO model
-model = YOLO("yolov8n.pt")
+model = YOLO("best.pt")
 
 @app.route("/predict", methods=["POST"])
 def predict():
