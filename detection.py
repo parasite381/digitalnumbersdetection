@@ -20,50 +20,22 @@
 # cv2.destroyAllWindows()
 
 
-from flask import Flask, render_template, request, jsonify
-from waitress import serve
-from PIL import Image
-from ultralytics import YOLO 
+from flask import Flask, request, jsonify
+from ultralytics import YOLO
+import cv2
 
 app = Flask(__name__)
 
-@app.route("/")
-def root():
-    """
-    Site main page handler function.
-    :return: Content of index.html file
-    """
-    with open("index.html") as file:
-        return file.read()
+# Load YOLO model
+model = YOLO("yolov8n.pt")
 
+@app.route("/predict", methods=["POST"])
+def predict():
+    file = request.files["image"]
+    img = cv2.imdecode(np.frombuffer(file.read(), np.uint8), cv2.IMREAD_COLOR)
+    results = model(img)
+    return jsonify(results[0].tojson())
 
-@app.route("/detect", methods=["POST"])
-def detect():
-    """
-    Handler of /detect POST endpoint
-    Receives uploaded file with a name "image_file", passes it
-    through YOLOv8 object detection network and returns an object
-    indicating whether a detection is present.
-    :return: a JSON object indicating whether a detection is present
-    """
-    buf = request.files["image_file"]
-    detection_present = detect_objects_on_image(buf.stream)
-    return jsonify({"detection_present": detection_present})
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=10000)
 
-
-def detect_objects_on_image(buf):
-    """
-    Function receives an image,
-    passes it through YOLOv8 neural network
-    and returns a boolean indicating whether a detection is present.
-    :param buf: Input image file stream
-    :return: Boolean indicating whether a detection is present
-    """
-    model = YOLO("best.pt")
-    results = model.predict(Image.open(buf))
-    result = results[0]
-    return len(result.boxes) > 0
-
-
-if __name__ == '__main__':
-    serve(app, host='0.0.0.0', port=8080)
