@@ -26,6 +26,7 @@ from ultralytics import YOLO
 import cv2
 import numpy as np
 import os
+import json
 
 app = Flask(__name__)
 CORS(app)   # <-- enable CORS for all routes
@@ -36,8 +37,11 @@ model = YOLO("best.pt")
 def predict():
     file = request.files["image"]
     img = cv2.imdecode(np.frombuffer(file.read(), np.uint8), cv2.IMREAD_COLOR)
+    if img is None:
+        return jsonify({"error": "Invalid image"}), 400
     results = model(img, conf=0.5)
-    return results[0].tojson()  # already JSON string
+    return jsonify(json.loads(results[0].tojson()))
+
 
 
 if __name__ == "__main__":
