@@ -37,7 +37,8 @@ def predict():
     file = request.files["image"]
     img = cv2.imdecode(np.frombuffer(file.read(), np.uint8), cv2.IMREAD_COLOR)
     results = model(img, conf=0.5)
-    return jsonify(results[0].tojson())
+    return results[0].tojson()  # already JSON string
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
