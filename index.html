@@ -1,0 +1,58 @@
+<input type="file" id="fileInput" />
+<button onclick="sendImage()">Upload</button>
+
+<script>
+async function sendImage() {
+  const fileInput = document.getElementById("fileInput");
+  const file = fileInput.files[0];
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const response = await fetch("https://digitalnumbersdetection.onrender.com/predict", {
+    method: "POST",
+    body: formData
+  });
+
+  const result = await response.json();
+  console.log(result); // detection results
+}
+</script>
+
+
+<!-- 
+<video id="video" autoplay></video>
+<canvas id="canvas" style="display:none;"></canvas>
+
+<script>
+navigator.mediaDevices.getUserMedia({ video: true })
+  .then(stream => {
+    document.getElementById("video").srcObject = stream;
+  });
+
+async function sendFrame() {
+  const video = document.getElementById("video");
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  ctx.drawImage(video, 0, 0);
+
+  const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg"));
+  const formData = new FormData();
+  formData.append("image", blob, "frame.jpg");
+
+  const response = await fetch("https://digitalnumbersdetection.onrender.com/predict", {
+    method: "POST",
+    body: formData
+  });
+
+  const result = await response.json();
+  console.log(result); // detection results
+
+  // Repeat every 500ms
+  setTimeout(sendFrame, 500);
+}
+
+sendFrame();
+</script> -->

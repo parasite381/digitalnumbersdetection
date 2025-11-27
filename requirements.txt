@@ -1,3 +1,4 @@
 ultralytics>=8.0.0
 opencv-python
 flask   # or fastapi, if you want a web API
+numpy
