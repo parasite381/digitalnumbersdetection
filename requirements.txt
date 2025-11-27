@@ -1,4 +1,6 @@
-ultralytics>=8.0.0
+flask
+flask-cors
+ultralytics
 opencv-python
-flask   # or fastapi, if you want a web API
 numpy
+gunicorn
