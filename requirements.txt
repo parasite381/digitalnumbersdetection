@@ -1,6 +1,8 @@
 flask
-flask-cors
+# flask-cors
 ultralytics
-opencv-python
-numpy
-gunicorn
+waitress
+PIL
+# opencv-python
+# numpy
+# gunicorn
