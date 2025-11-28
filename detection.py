@@ -60,14 +60,7 @@ CORS(app, resources={r"/detect": {"origins": "http://127.0.0.1:5500"}})
 
 @app.route("/")
 def root():
-    """
-    Site main page handler function.
-    :return: Content of index.html file
-    """
-    with open("index.html") as file:
-        return file.read()
-
-
+    return render_template("index.html")
 @app.route("/detect", methods=["POST"])
 def detect():
     """
