@@ -116,6 +116,7 @@
                 body: data
             });
             const result = await response.json();
+            console.log(response);
             displayDetectionResult(result);
 
             uploadedImage.src = URL.createObjectURL(file);

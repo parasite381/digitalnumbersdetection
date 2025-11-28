@@ -56,7 +56,7 @@ from PIL import Image
 from ultralytics import YOLO 
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/detect": {"origins": "http://127.0.0.1:5500"}})
 
 @app.route("/")
 def root():
