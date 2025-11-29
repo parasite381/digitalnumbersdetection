@@ -87,7 +87,7 @@ def detect_objects_on_image(buf):
     :return: Boolean indicating whether a detection is present
     """
     model = YOLO("best.pt")
-    results = model.predict(Image.open(buf))
+    results = model.predict(Image.open(buf),conf=0.5)
     boxes = []
     for box in results[0].boxes:
         # xyxy format: [x1, y1, x2, y2]
