@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="en">
   <head>
     <meta charset="UTF-8">
@@ -81,6 +81,7 @@
     </style>
   </head>
   <body>
+    <canvas id="canvas"></canvas>
     <img id="uploadedImage" src="#" alt="Uploaded Image">
     <div id="result"></div>
     <div id="uploadContainer">
@@ -101,7 +102,9 @@
         const uploadButton = document.getElementById("uploadButton");
         const uploadContainer = document.getElementById("uploadContainer");
         const resultDiv = document.getElementById("result");
-        const uploadedImage = document.getElementById("uploadedImage");
+        let uploadedImage = document.getElementById("uploadedImage");
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
 
         uploadButton.addEventListener("click", () => {
             input.click();
@@ -116,12 +119,54 @@
                 body: data
             });
             const result = await response.json();
-            console.log(response);
+            console.log(result.boxes);
             displayDetectionResult(result);
 
-            uploadedImage.src = URL.createObjectURL(file);
-            uploadedImage.style.display = "block";
+            
+
+ // Load image into canvas
+ let uploadedImage = new Image();
+ uploadedImage.src = URL.createObjectURL(file);
+ uploadedImage.onload = () => {
+
+// Set desired max size
+const maxWidth = 600;
+  const maxHeight = 400;
+
+  // Keep aspect ratio
+  let scale = Math.min(maxWidth / uploadedImage.width, maxHeight / uploadedImage.height);
+
+  const newWidth = uploadedImage.width * scale;
+  const newHeight = uploadedImage.height * scale;
+
+    canvas.width = newWidth;
+    canvas.height = newHeight;
+    ctx.drawImage(uploadedImage, 0, 0,newWidth,newHeight);
+
+    // Draw rectangles
+    result.boxes.forEach(box => {
+      ctx.strokeStyle = "red";
+      ctx.lineWidth = 2;
+     // Scale coordinates
+    const x1 = box.x1 * scale;
+    const y1 = box.y1 * scale;
+    const x2 = box.x2 * scale;
+    const y2 = box.y2 * scale;
+
+      ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+
+      // Draw label text
+      ctx.fillStyle = "red";
+      ctx.font = "16px Arial";
+      ctx.fillText(`${box.class_name} (${(box.confidence*100).toFixed(1)}%)`, box.x1, box.y1 - 5);
+    });
+  };
+
+
+         // uploadedImage.src = URL.createObjectURL(file);
+          uploadedImage.style.display = "block";
             uploadContainer.style.marginTop = "0px";
+
 
             // await sendForDetection(file, 2); // retry up to 2 times
         });

@@ -92,7 +92,10 @@ def detect_objects_on_image(buf):
     for box in results[0].boxes:
         # xyxy format: [x1, y1, x2, y2]
         x1, y1, x2, y2 = box.xyxy[0].tolist()
-        boxes.append({"x1": x1, "y1": y1, "x2": x2, "y2": y2})
+        cls_id = int(box.cls[0])
+        cls_name = model.names[cls_id]
+        conf = float(box.conf[0])
+        boxes.append({"x1": x1, "y1": y1, "x2": x2, "y2": y2,"class_name": cls_name,"confidence": conf})
 
     return boxes
 
