@@ -77,8 +77,9 @@ def detect():
     :return: a JSON object indicating whether a detection is present
     """
     buf = request.files["image_file"]
-    detection_present = detect_objects_on_image(buf.stream)
-    return jsonify({"detection_present": detection_present})
+    boxes = detect_objects_on_image(buf.stream)
+    return jsonify({"boxes": boxes, "detection_present": len(boxes) > 0})
+    # return jsonify({"detection_present": detection_present})
 
 
 def detect_objects_on_image(buf):
@@ -91,8 +92,17 @@ def detect_objects_on_image(buf):
     """
     model = YOLO("best.pt")
     results = model.predict(Image.open(buf))
-    result = results[0]
-    return len(result.boxes) > 0
+    boxes = []
+    for box in results[0].boxes:
+        # xyxy format: [x1, y1, x2, y2]
+        x1, y1, x2, y2 = box.xyxy[0].tolist()
+        boxes.append({"x1": x1, "y1": y1, "x2": x2, "y2": y2})
+
+    return boxes
+
+
+    # result = results[0]
+    # return len(result.boxes) > 0
 
 
 if __name__ == '__main__':
