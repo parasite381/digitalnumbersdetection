@@ -59,12 +59,8 @@ app = Flask(__name__)
 CORS(app)
 @app.route("/")
 def root():
-    """
-    Site main page handler function.
-    :return: Content of index.html file
-    """
-    with open("index.html") as file:
-        return file.read()
+    return render_template("index.html")
+
 
 
 @app.route("/detect", methods=["POST"])
