@@ -90,8 +90,11 @@
         </label>
         <input id="uploadInput" type="file" accept="image/*" style="display: none;">
     </div>
-<!-- <input type="file" id="fileInput" /> -->
-<!-- <button onclick="sendImage()">Upload</button> -->
+
+
+    //live detection
+    <video id="video" autoplay playsinline style="display: none;"></video>
+    <canvas id="canvas2"></canvas>
 <script>
         /**
          * "Upload" button onClick handler: uploads selected
@@ -105,6 +108,9 @@
         let uploadedImage = document.getElementById("uploadedImage");
         const canvas = document.getElementById("canvas");
         const ctx = canvas.getContext("2d");
+        let video = document.getElementById("video");
+        const canvas2 = document.getElementById("canvas2");
+        const ctx2 = canvas2.getContext("2d");
 
         uploadButton.addEventListener("click", () => {
             input.click();
@@ -167,8 +173,6 @@ const maxWidth = 600;
           uploadedImage.style.display = "block";
             uploadContainer.style.marginTop = "0px";
 
-
-            // await sendForDetection(file, 2); // retry up to 2 times
         });
 
         /**
@@ -187,46 +191,54 @@ const maxWidth = 600;
         }
 
 
-//         async function sendForDetection(file, retries = 1) {
-//     const data = new FormData();
-//     data.append("image_file", file, "image_file");
+        // Access webcam
+navigator.mediaDevices.getUserMedia({ video:true})
+  .then(stream => { video.srcObject = stream; });////////
 
-//     try {
-//         const response = await fetch("https://digitalnumbersdetection.onrender.com/detect", {
-//             method: "POST",
-//             body: data
-//         });
-//         const result = await response.json();
+// Periodically send frames to backend
+setInterval(async () => {
 
-//         displayDetectionResult(result);
+  const maxWidth = 600;
+  const maxHeight = 400;
 
-//         // Retry if result is not what you want
-//         if (!result.detection_present && retries > 0) {
-//             console.log("Retrying detection...");
-//             return sendForDetection(file, retries - 1);
-//         }
+  // Keep aspect ratio
+  let scale = Math.min(maxWidth / video.videoWidth, maxHeight / video.videoHeight);
 
-//         return result;
-//     } catch (err) {
-//         console.error("Detection error:", err);
-//     }
-// }
+  const newWidth2 = video.videoWidth * scale;
+  const newHeight2 = video.videoHeight * scale;
 
 
-// async function sendImage() {
-//   const fileInput = document.getElementById("fileInput");
-//   const file = fileInput.files[0];
-//   const formData = new FormData();
-//   formData.append("image", file);
+  canvas2.width = newWidth2;
+  canvas2.height = newHeight2;
+  ctx2.drawImage(video, 0, 0,newWidth2,newHeight2);
 
-//   const response = await fetch("https://digitalnumbersdetection.onrender.com/predict", {
-//     method: "POST",
-//     body: formData
-//   });
+  canvas2.toBlob(async blob => {
+    if (!blob) return;
+    const formData = new FormData();
+    formData.append("image_file", blob, "frame.jpg");
 
-//   const result = await response.json();
-//   console.log(result); // detection results
-// }
+    const res = await fetch("https://digitalnumbersdetection.onrender.com/detect", {
+      method: "POST",
+      body: formData
+    });
+    const result = await res.json();
+
+    // Draw detection boxes
+    result.boxes.forEach(box => {
+
+    const x1 = box.x1 * scale;
+    const y1 = box.y1 * scale;
+    const x2 = box.x2 * scale;
+    const y2 = box.y2 * scale;
+
+      ctx2.strokeStyle = "red";
+      ctx2.lineWidth = 2;
+      ctx2.strokeRect(x1, y1, x2 - x1, y2 - y1);
+      ctx2.fillStyle = "red";
+      ctx2.fillText(`${box.class_name} (${(box.confidence*100).toFixed(1)}%)`, x1, y1 - 5);
+    });
+  }, "image/jpeg");
+}, 500); // every 500ms
 </script>
 </body>
 </html>

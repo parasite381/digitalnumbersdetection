@@ -1,54 +1,3 @@
-# from ultralytics import YOLO
-# import cv2
-
-# model = YOLO('best.pt')
-# cap = cv2.VideoCapture(0)  # 0 = default webcam
-
-# while True:
-#     ret, frame = cap.read()
-#     if not ret:
-#         break
-
-#     results = model(frame,conf=0.5)
-#     annotated_frame = results[0].plot()
-
-#     cv2.imshow("YOLOv8 Detection", annotated_frame)
-#     if cv2.waitKey(1) & 0xFF == ord('q'):
-#         break
-
-# cap.release()
-# cv2.destroyAllWindows()
-
-
-# from flask import Flask, request, jsonify
-# from flask_cors import CORS   # <-- import CORS
-# from ultralytics import YOLO
-# import cv2
-# import numpy as np
-# import os
-# import json
-
-# app = Flask(__name__)
-# CORS(app)   # <-- enable CORS for all routes
-
-# model = YOLO("best.pt")
-
-# @app.route("/predict", methods=["POST"])
-# def predict():
-#     file = request.files["image"]
-#     img = cv2.imdecode(np.frombuffer(file.read(), np.uint8), cv2.IMREAD_COLOR)
-#     if img is None:
-#         return jsonify({"error": "Invalid image"}), 400
-#     results = model(img, conf=0.5)
-#     return jsonify(json.loads(results[0].tojson()))
-
-
-
-# if __name__ == "__main__":
-#     port = int(os.environ.get("PORT", 10000))
-#     app.run(host="0.0.0.0", port=port)
-
-
 from flask import Flask, render_template, request, jsonify
 from waitress import serve
 from flask_cors import CORS 
@@ -98,11 +47,6 @@ def detect_objects_on_image(buf):
         boxes.append({"x1": x1, "y1": y1, "x2": x2, "y2": y2,"class_name": cls_name,"confidence": conf})
 
     return boxes
-
-
-    # result = results[0]
-    # return len(result.boxes) > 0
-
 
 if __name__ == '__main__':
     serve(app, host='0.0.0.0', port=8080)
