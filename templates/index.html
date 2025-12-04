@@ -91,7 +91,7 @@
         <input id="uploadInput" type="file" accept="image/*" style="display: none;">
     </div>
 
-
+<button id="switchbtn">Switch Button</button>
     //live detection
     <video id="video" autoplay playsinline style="display: none;"></video>
     <canvas id="canvas2"></canvas>
@@ -190,11 +190,30 @@ const maxWidth = 600;
             }
         }
 
+let currentFacingMode = "environment"; // or "user"
+let stream;
+
+// Function to start camera
+async function startCamera() {
+  if (stream) {
+    stream.getTracks().forEach(track => track.stop()); // Stop old camera
+  }
 
         // Access webcam
-navigator.mediaDevices.getUserMedia({ video:true})
-  .then(stream => { video.srcObject = stream; });////////
+stream=await navigator.mediaDevices.getUserMedia({ video:{facingMode:currentFacingMode}})
 
+video.srcObject = stream;///
+
+
+startCamera();
+
+
+
+// Switch camera when button is clicked
+document.getElementById("switchBtn").addEventListener("click", () => {
+  currentFacingMode = currentFacingMode === "user" ? "environment" : "user";
+  startCamera();
+});
 // Periodically send frames to backend
 setInterval(async () => {
 
