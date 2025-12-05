@@ -6,6 +6,10 @@ from ultralytics import YOLO
 
 app = Flask(__name__)
 CORS(app)
+
+#load
+model = YOLO("best.pt")
+
 @app.route("/")
 def root():
     return render_template("index.html")
@@ -35,7 +39,7 @@ def detect_objects_on_image(buf):
     :param buf: Input image file stream
     :return: Boolean indicating whether a detection is present
     """
-    model = YOLO("best.pt")
+    
     results = model.predict(Image.open(buf),conf=0.5)
     boxes = []
     for box in results[0].boxes:
