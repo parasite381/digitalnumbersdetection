@@ -203,14 +203,14 @@ async function startCamera() {
 stream=await navigator.mediaDevices.getUserMedia({ video:{facingMode:currentFacingMode}})
 
 video.srcObject = stream;///
-}
+
 
 startCamera();
-
+}
 
 
 // Switch camera when button is clicked
-document.getElementById("switchBtn").addEventListener("click", () => {
+document.getElementById("switchbtn").addEventListener("click", () => {
   currentFacingMode = currentFacingMode === "user" ? "environment" : "user";
   startCamera();
 });

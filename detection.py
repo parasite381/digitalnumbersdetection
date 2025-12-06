@@ -7,7 +7,6 @@ from ultralytics import YOLO
 app = Flask(__name__)
 CORS(app)
 
-#load
 model = YOLO("best.pt")
 
 @app.route("/")
