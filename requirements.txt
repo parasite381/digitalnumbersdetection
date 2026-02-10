@@ -8,6 +8,6 @@ pillow
 # gunicorn
 
 #added new 
-threading
-cv2
+#threading
+#cv2
 eventlet
