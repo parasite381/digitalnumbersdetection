@@ -6,3 +6,8 @@ pillow
 # opencv-python
 # numpy
 # gunicorn
+
+#added new 
+threading
+cv2
+eventlet
