@@ -1,7 +1,8 @@
-from flask import Flask, Response
-from flask_socketio import SocketIO
 import eventlet
 eventlet.monkey_patch()
+from flask import Flask, Response
+from flask_socketio import SocketIO
+
 app = Flask(__name__)
 
 last_value=None
