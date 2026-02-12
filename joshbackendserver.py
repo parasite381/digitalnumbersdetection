@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 last_value=None
 tempstore={}
-socketio=SocketIO(app,cors_allowed_origins="*",async_mode="eventlet")
+socketio=SocketIO(app,cors_allowed_origins="*",async_mode="gevent")
 @app.route('/')
 @socketio.on('connect')
 def handle_connect():
