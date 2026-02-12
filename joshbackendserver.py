@@ -1,5 +1,5 @@
-import eventlet
-eventlet.monkey_patch()
+
+
 from flask import Flask, Response
 from flask_socketio import SocketIO
 
@@ -33,4 +33,8 @@ def getres():
    print("From Pricchatmonth GET")
 
 if __name__ == "__main__":
-    socketio.run(app,host="0.0.0.0", port=8081)
+    from gevent import pywsgi
+    from geventwebsocket.handler import WebSocketHandler
+    server = pywsgi.WSGIServer(("0.0.0.0", 8081), app, handler_class=WebSocketHandler)
+    server.serve_forever()
+
