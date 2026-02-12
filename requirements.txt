@@ -1,8 +1,8 @@
 flask
 flask-cors
-ultralytics
-waitress
-pillow
+#ultralytics
+#waitress
+#pillow
 # opencv-python
 # numpy
 # gunicorn
@@ -10,5 +10,7 @@ pillow
 #added new 
 #threading
 #cv2
-eventlet
+#eventlet
 flask-socketio
+gevent
+gevent-websocket
