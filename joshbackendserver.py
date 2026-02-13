@@ -29,7 +29,12 @@ def newval(dat):
     socketio.emit("new_value", {"value":dat})
     tempstore['num']=dat
 
-@ 
+@socketio.on("getres")
+def getres(mess):
+    print(mess)
+    storeddata=tempstore.get('num',None)
+    socketio.emit("resval",{"value":storeddata})
+    print("From Pricchatmonth GET") 
 
 if __name__ == "__main__":
     from gevent import pywsgi
