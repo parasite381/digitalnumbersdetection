@@ -7,7 +7,10 @@ app = Flask(__name__)
 last_value=None
 tempstore={}
 socketio=SocketIO(app,cors_allowed_origins="*",async_mode="gevent")
-
+@app.route('/')
+def index():
+   print("Socket server is live")
+   return "socket io say hello "
 @socketio.on('connect')
 def handle_connect():
    #user connect place 
