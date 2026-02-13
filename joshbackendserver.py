@@ -1,6 +1,7 @@
 
 from flask import Flask, Response
 from flask_socketio import SocketIO
+import os
 
 app = Flask(__name__)
 
@@ -37,6 +38,7 @@ def getres():
 if __name__ == "__main__":
     from gevent import pywsgi
     from geventwebsocket.handler import WebSocketHandler
-    server = pywsgi.WSGIServer(("0.0.0.0", 8081), app, handler_class=WebSocketHandler)
+    port=int(os.environ.get("PORT",8081))
+    server = pywsgi.WSGIServer(("0.0.0.0", port), app, handler_class=WebSocketHandler)
     server.serve_forever()
     print("Listening in port 8081 ,is online")
