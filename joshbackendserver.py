@@ -48,6 +48,11 @@ def geturl(mess):
     print(mess)
     storeddata=tempstore.get('urld',None)
     socketio.emit("nurl",{"url":storeddata})
+   
+
+@socketio.on("getcapture")
+def getcapture(mess):
+    print(mess)
     socketio.emit("captureframe","capturecapture")
    
 
